@@ -1,10 +1,53 @@
 {
-  "name": "@tessera/plugin-usage",
+  "name": "tessera-plugin-usage",
   "version": "0.1.0",
   "description": "Claude Code usage from ccusage: limit windows or spend against caps, tokens by model and spend per 5-hour block.",
   "type": "module",
   "license": "MIT",
-  "exports": { ".": { "source": "./src/index.ts", "default": "./dist/index.js" } },
-  "tessera": { "plugin": "./dist/index.js" },
-  "peerDependencies": { "@tessera/sdk": "*" }
+  "author": "Loksly",
+  "keywords": [
+    "tessera",
+    "tessera-plugin",
+    "lcd",
+    "widgets",
+    "agents"
+  ],
+  "homepage": "https://github.com/Loksly/tessera-plugin-usage#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Loksly/tessera-plugin-usage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Loksly/tessera-plugin-usage/issues"
+  },
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "tessera": {
+    "plugin": "./dist/index.js",
+    "id": "usage"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --conditions=source --test \"src/**/*.test.ts\"",
+    "check": "tsc -p tsconfig.json",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@tessera/sdk": "^0.1.0",
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.3"
+  }
 }
