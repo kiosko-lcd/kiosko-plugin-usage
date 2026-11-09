@@ -1,20 +1,20 @@
-# tessera-plugin-usage
+# kiosko-plugin-usage
 
 How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.
 
-A plugin for [Tessera](https://github.com/Loksly/tessera), the widget mosaic for small USB LCD panels.
+A plugin for [Kiosko](https://github.com/kiosko-lcd/kiosko), the widget mosaic for small USB LCD panels.
 
 ![Usage](docs/rail.png)
 
 ## Install
 
-In Tessera, **Plugins → Install from npm** → `tessera-plugin-usage`, then restart Tessera. Or from a terminal:
+In Kiosko, **Plugins → Install from npm** → `kiosko-plugin-usage`, then restart Kiosko. Or from a terminal:
 
 ```sh
-npm install --prefix ~/.config/tessera/plugins tessera-plugin-usage
+npm install --prefix ~/.config/kiosko/plugins kiosko-plugin-usage
 ```
 
-(macOS: `~/Library/Application Support/Tessera/plugins`, Windows: `%APPDATA%\Tessera\plugins`.)
+(macOS: `~/Library/Application Support/Kiosko/plugins`, Windows: `%APPDATA%\Kiosko\plugins`.)
 
 ## Requirements
 
@@ -51,7 +51,7 @@ Uses: `usage/ccusage`.
 
 ### Claude Code usage (ccusage) — `usage/ccusage`
 
-Runs ccusage every minute. Each run walks the whole Claude Code history (a few seconds of CPU). Read every 1 min while a widget uses it. Options are set once in Tessera → Settings → Data sources.
+Runs ccusage every minute. Each run walks the whole Claude Code history (a few seconds of CPU). Read every 1 min while a widget uses it. Options are set once in Kiosko → Settings → Data sources.
 
 | Option | Type | Default | |
 |---|---|---|---|
@@ -69,14 +69,14 @@ Runs ccusage every minute. Each run walks the whole Claude Code history (a few s
 npm install
 npm test          # node:test
 npm run check     # TypeScript
-npm run build     # dist/index.js, what Tessera loads
+npm run build     # dist/index.js, what Kiosko loads
 ```
 
-To try it in a running Tessera without publishing: `tessera plugins link .` and restart Tessera.
+To try it in a running Kiosko without publishing: `kiosko plugins link .` and restart Kiosko.
 
-Working on Tessera and its plugins together: clone them side by side
-(`tessera/` and `tessera-plugins/tessera-plugin-usage/`) and run `npm install` in
-`tessera/`; its workspaces link every plugin found in `../tessera-plugins`.
+Working on Kiosko and its plugins together: clone them side by side
+(`kiosko/` and `kiosko-plugins/kiosko-plugin-usage/`) and run `npm install` in
+`kiosko/`; its workspaces link every plugin found in `../kiosko-plugins`.
 
 ## License
 

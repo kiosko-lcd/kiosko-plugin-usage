@@ -4,7 +4,7 @@
  * measurements are the original rail's (356 px wide, ~300 px of body),
  * scaled to the box.
  */
-import type { Graphics, Localized, RenderContext } from '@tessera/sdk';
+import type { Graphics, Localized, RenderContext } from '@kiosko/sdk';
 import type { UsageSnapshot } from './ccusage.ts';
 import { countdown, money, percent, tokens } from './format.ts';
 

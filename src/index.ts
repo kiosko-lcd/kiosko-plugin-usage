@@ -4,7 +4,7 @@
  * tokens by model and the spend of the last 5-hour blocks. Ported from the
  * aimonitor usage rail.
  */
-import { definePlugin, defineSource, defineWidget, t } from '@tessera/sdk';
+import { definePlugin, defineSource, defineWidget, t } from '@kiosko/sdk';
 import { execRunner, readUsage, type UsageSnapshot } from './ccusage.ts';
 import { USAGE_SOURCE, drawBlocks, drawRail, level, railRatios, usageOf } from './draw.ts';
 import { usageMax } from './demo.ts';
@@ -112,7 +112,7 @@ export default definePlugin({
     en: 'How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.',
     es: 'Cuánto Claude Code estás gastando, según ccusage: ventanas de límite o gasto, tokens por modelo y gasto por bloque.',
   },
-  author: 'Tessera',
+  author: 'Kiosko',
   license: 'MIT',
   icon: 'gauge',
   widgets: [railWidget, blocksWidget],
