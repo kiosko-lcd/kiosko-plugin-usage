@@ -21,6 +21,7 @@ export const ccusageSource = defineSource({
   options: t.object({
     bin: t.string({
       default: 'ccusage',
+      risk: 'exec',
       label: { en: 'ccusage command', es: 'Comando de ccusage' },
       help: { en: 'Looked up in PATH unless it is a full path. May carry arguments, e.g. "npx ccusage".', es: 'Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. "npx ccusage".' },
     }),
