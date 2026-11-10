@@ -76,3 +76,25 @@ test('readUsage: runs the real ccusage commands with --json', async () => {
   await readUsage(API, async (args) => (calls.push(args.join(' ')), {}), now);
   assert.deepEqual(calls, ['daily --json', 'blocks --json', 'monthly --json']);
 });
+
+test('the snapshot keeps up to 48 blocks; usage/blocks shows the last `blocks`', async () => {
+  const many = { blocks: Array.from({ length: 60 }, (_, i) => ({ startTime: iso(now - (60 - i) * 5 * 3_600_000), costUSD: i, totalTokens: i })) };
+  const s = buildSnapshot({ daily, blocks: many, weekly }, MAX, now);
+  assert.equal(s.blockHistory?.length, 48);
+  assert.equal(s.blockHistory?.[0]?.cost, 12);
+  const { default: plugin, blocksWidget } = await import('./index.ts');
+  const { createCanvas } = await import('@napi-rs/canvas');
+  const { THEMES, createBaseContext } = await import('@kiosko/sdk');
+  const kit = await import('@loksly/lcd-canvas-kit');
+  const seen: number[][] = [];
+  const spy = { ...kit, sparkBars: (values: number[], ...rest: unknown[]) => (seen.push(values), (kit.sparkBars as (...a: unknown[]) => ReturnType<typeof kit.sparkBars>)(values, ...rest)) };
+  const theme = THEMES[0]!;
+  for (const blocks of [12, 30]) {
+    const g = createCanvas(600, 200).getContext('2d');
+    blocksWidget.render(g as never, { ...createBaseContext({ now, locale: 'en' }), options: { blocks }, data: undefined, sources: { 'usage/ccusage': s }, working: true, box: { x: 0, y: 0, w: 600, h: 200 }, theme, fonts: theme.fonts, kit: spy, canvas: { createCanvas }, preview: true } as never);
+  }
+  assert.deepEqual(seen.map((v) => v.length), [12, 30]);
+  assert.equal(seen[0]!.at(-1), 59, 'the most recent ones');
+  const src = plugin.sources![0]!;
+  assert.equal(src.minIntervalMs, 60_000, 'ccusage costs seconds of CPU per run');
+});

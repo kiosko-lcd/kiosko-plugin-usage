@@ -33,25 +33,27 @@ Uses: `usage/ccusage`.
 | Option | Type | Default | |
 |---|---|---|---|
 | `bars` | number | `2` | Bars |
-| `models` | number | `3` | Models listed |
-| `warn` | number | `0.6` | Amber from |
-| `alert` | number | `0.85` | Red from |
+| `models` | number | `3` | Models listed. 0 = only today's total. |
+| `warn` | number | `60` | Amber from. How full a bar is. |
+| `alert` | number | `85` | Red from |
 
 ### Spend per 5-hour block — `usage/blocks`
 
-The equivalent cost of the last twelve 5-hour blocks, the running one highlighted: is today unusual?
+The equivalent cost of the last 5-hour blocks (twelve by default), the running one highlighted: is today unusual?
 
 ![Spend per 5-hour block](docs/blocks.png)
 
 Uses: `usage/ccusage`.
 
-*No options.*
+| Option | Type | Default | |
+|---|---|---|---|
+| `blocks` | number | `12` | Blocks shown. 12 = two and a half days; 48 = ten. |
 
 ## Data sources
 
 ### Claude Code usage (ccusage) — `usage/ccusage`
 
-Runs ccusage every minute. Each run walks the whole Claude Code history (a few seconds of CPU). Read every 1 min while a widget uses it. Options are set once in Kiosko → Settings → Data sources.
+Runs ccusage, every minute by default and never more often. Each run walks the whole Claude Code history (a few seconds of CPU). Read every 1 min while a widget uses it. Options are set once in Kiosko → Settings → Data sources.
 
 | Option | Type | Default | |
 |---|---|---|---|

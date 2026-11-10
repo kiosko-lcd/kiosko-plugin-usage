@@ -5,7 +5,7 @@
  * aimonitor usage rail.
  */
 import { definePlugin, defineSource, defineWidget, t } from '@kiosko/sdk';
-import { execRunner, readUsage, type UsageSnapshot } from './ccusage.ts';
+import { SPARK_BLOCKS, execRunner, readUsage, type UsageSnapshot } from './ccusage.ts';
 import { USAGE_SOURCE, drawBlocks, drawRail, level, railRatios, usageOf } from './draw.ts';
 import { usageMax } from './demo.ts';
 
@@ -15,8 +15,8 @@ export const ccusageSource = defineSource({
   id: 'ccusage',
   name: { en: 'Claude Code usage (ccusage)', es: 'Consumo de Claude Code (ccusage)' },
   description: {
-    en: 'Runs ccusage every minute. Each run walks the whole Claude Code history (a few seconds of CPU).',
-    es: 'Ejecuta ccusage cada minuto. Cada pasada recorre todo el historial de Claude Code (unos segundos de CPU).',
+    en: 'Runs ccusage, every minute by default and never more often. Each run walks the whole Claude Code history (a few seconds of CPU).',
+    es: 'Ejecuta ccusage, cada minuto por defecto y nunca más a menudo. Cada pasada recorre todo el historial de Claude Code (unos segundos de CPU).',
   },
   options: t.object({
     bin: t.string({
@@ -48,13 +48,17 @@ export const ccusageSource = defineSource({
     ),
   }),
   intervalMs: 60_000,
+  // Three ccusage runs of a few seconds of CPU each: faster than this, the panel would cost more than the usage it shows.
+  minIntervalMs: 60_000,
+  // Each run gives up after 30 s on its own.
+  timeoutMs: 120_000,
   read: (ctx): Promise<UsageSnapshot> => readUsage(ctx.options, execRunner(ctx.options.bin, ctx.signal), Date.now(), ctx.log),
   demo: ({ now }) => usageMax(now),
 });
 
 const thresholds = {
-  warn: t.number({ default: 0.6, min: 0, max: 1, step: 0.05, slider: true, label: { en: 'Amber from', es: 'Ámbar desde' } }),
-  alert: t.number({ default: 0.85, min: 0, max: 1, step: 0.05, slider: true, label: { en: 'Red from', es: 'Rojo desde' } }),
+  warn: t.integer({ default: 60, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Amber from', es: 'Ámbar desde' }, help: { en: 'How full a bar is.', es: 'Lo llena que está una barra.' } }),
+  alert: t.integer({ default: 85, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Red from', es: 'Rojo desde' } }),
 };
 
 export const railWidget = defineWidget({
@@ -70,7 +74,7 @@ export const railWidget = defineWidget({
   size: { min: { w: 220, h: 200 }, preferred: { w: 380, h: 390 } },
   options: t.object({
     bars: t.integer({ default: 2, min: 1, max: 2, label: { en: 'Bars', es: 'Barras' } }),
-    models: t.integer({ default: 3, min: 0, max: 8, label: { en: 'Models listed', es: 'Modelos listados' } }),
+    models: t.integer({ default: 3, min: 0, max: 8, label: { en: 'Models listed', es: 'Modelos listados' }, help: { en: '0 = only today\'s total.', es: '0 = solo el total de hoy.' } }),
     ...thresholds,
   }),
   sources: [USAGE_SOURCE],
@@ -90,16 +94,19 @@ export const blocksWidget = defineWidget({
   id: 'blocks',
   name: { en: 'Spend per 5-hour block', es: 'Gasto por bloque (5 h)' },
   description: {
-    en: 'The equivalent cost of the last twelve 5-hour blocks, the running one highlighted: is today unusual?',
-    es: 'El coste equivalente de los últimos doce bloques de 5 horas, con el actual destacado: ¿hoy es un día raro?',
+    en: 'The equivalent cost of the last 5-hour blocks (twelve by default), the running one highlighted: is today unusual?',
+    es: 'El coste equivalente de los últimos bloques de 5 horas (doce por defecto), con el actual destacado: ¿hoy es un día raro?',
   },
   icon: 'bar-chart',
   category: 'agents',
   tags: ['claude', 'ccusage', 'cost', 'sparkline'],
   size: { min: { w: 200, h: 100 }, preferred: { w: 600, h: 200 } },
   sources: [USAGE_SOURCE],
+  options: t.object({
+    blocks: t.integer({ default: 12, min: 4, max: SPARK_BLOCKS, label: { en: 'Blocks shown', es: 'Bloques mostrados' }, help: { en: '12 = two and a half days; 48 = ten.', es: '12 = dos días y medio; 48 = diez.' } }),
+  }),
   render(g, ctx) {
-    drawBlocks(g, ctx);
+    drawBlocks(g, ctx, ctx.options.blocks);
   },
   idle: () => true,
   demo: ({ now }) => ({ sources: { [USAGE_SOURCE]: usageMax(now) } }),

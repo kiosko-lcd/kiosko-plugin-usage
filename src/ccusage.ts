@@ -112,8 +112,8 @@ export interface UsageOptions {
 
 const DAY_MS = 86_400_000;
 
-/** How many 5-hour blocks the sparkline gets: ~2.5 days of context. */
-export const SPARK_BLOCKS = 12;
+/** How many 5-hour blocks the snapshot keeps: ten days, the most `usage/blocks` can show. */
+export const SPARK_BLOCKS = 48;
 
 /** Drops the family prefix so the name fits the rail. */
 export function shortModel(name: string): string {

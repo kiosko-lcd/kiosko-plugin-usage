@@ -6,9 +6,9 @@
  */
 import type { Graphics, Localized, RenderContext } from '@kiosko/sdk';
 import type { UsageSnapshot } from './ccusage.ts';
-import { countdown, money, percent, tokens } from './format.ts';
+import { money, percent, tokens } from './format.ts';
 
-type Ctx = Pick<RenderContext<unknown, unknown>, 'box' | 'theme' | 'kit' | 'now' | 't' | 'sources'>;
+type Ctx = Pick<RenderContext<unknown, unknown>, 'box' | 'theme' | 'kit' | 'now' | 't' | 'sources' | 'fmt'>;
 
 export const USAGE_SOURCE = 'usage/ccusage';
 
@@ -34,6 +34,7 @@ export function usageOf(sources: Record<string, unknown>): UsageSnapshot | undef
   return u && typeof u === 'object' && (u.mode === 'max' || u.mode === 'api') ? u : undefined;
 }
 
+/** Bar fill, %: amber from `warn`, red from `alert`. */
 export interface Thresholds {
   warn: number;
   alert: number;
@@ -44,9 +45,10 @@ export function railRatios(u: UsageSnapshot): number[] {
   return u.mode === 'max' ? (u.windows ?? []).map((w) => w.ratio) : (u.spend ?? []).map((s) => (s.cap > 0 ? s.amount / s.cap : 0));
 }
 
-/** Semaphore level of a ratio against the thresholds. */
+/** Semaphore level of a ratio (0..1) against the thresholds (%). */
 export function level(ratio: number, t: Thresholds): 'alert' | 'warn' | 'info' {
-  return ratio >= t.alert ? 'alert' : ratio >= t.warn ? 'warn' : 'info';
+  const pct = ratio * 100;
+  return pct >= t.alert ? 'alert' : pct >= t.warn ? 'warn' : 'info';
 }
 
 function hairline(g: Graphics, x: number, y: number, w: number, color: string): void {
@@ -96,13 +98,14 @@ function drawBar(g: Graphics, ctx: Ctx, x: number, y: number, w: number, bar: Ba
 }
 
 function barsOf(ctx: Ctx, u: UsageSnapshot): Bar[] {
-  const { t, now } = ctx;
+  const { t, now, fmt } = ctx;
   if (u.mode === 'max') {
     return (u.windows ?? []).map((win) => ({
       label: t(TEXT[win.id]),
       right: percent(win.ratio),
       ratio: win.ratio,
-      note: win.resetsAt ? fill(t(TEXT.resetsIn), { t: countdown(win.resetsAt - now) }) : null,
+      // Rounded up: "resets in 0 min" would be a lie until it does.
+      note: win.resetsAt ? fill(t(TEXT.resetsIn), { t: fmt.duration(win.resetsAt - now, { round: 'up' }) }) : null,
     }));
   }
   return (u.spend ?? []).map((sp) => ({ label: t(TEXT[sp.id]), right: money(sp.amount), ratio: sp.cap > 0 ? sp.amount / sp.cap : 0, note: fill(t(TEXT.of), { cap: money(sp.cap) }) }));
@@ -186,12 +189,12 @@ export function drawRail(g: Graphics, ctx: Ctx, o: RailOptions): void {
   }
 }
 
-/** The spend per 5-hour block, as bars; the running block one step brighter. */
-export function drawBlocks(g: Graphics, ctx: Ctx): void {
+/** The spend of the last `blocks` 5-hour blocks, as bars; the running block one step brighter. */
+export function drawBlocks(g: Graphics, ctx: Ctx, blocks: number): void {
   const { box, kit, theme, t } = ctx;
   const c = theme.colors;
   const s = clamp(Math.min(box.h / 200, box.w / 300), 0.6, 1.5);
-  const points = usageOf(ctx.sources)?.blockHistory ?? [];
+  const points = (usageOf(ctx.sources)?.blockHistory ?? []).slice(-Math.max(1, blocks));
   if (!points.length) {
     quiet(g, ctx, TEXT.noData, s);
     return;

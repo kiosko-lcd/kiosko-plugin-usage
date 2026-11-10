@@ -6,9 +6,12 @@ import type { BlockPoint, UsageSnapshot } from './ccusage.ts';
 
 const min = (n: number) => n * 60_000;
 
-/** Twelve 5-hour blocks with a recognisable shape; the last one is running. */
+/** Forty-eight 5-hour blocks (ten days) with a recognisable shape; the last one is running. */
 function blocks(now: number): BlockPoint[] {
-  const costs = [18.4, 46.2, 3.1, 31.7, 29.5, 1.2, 12.8, 9.4, 22.6, 5.7, 38.9, 14.3];
+  const last12 = [18.4, 46.2, 3.1, 31.7, 29.5, 1.2, 12.8, 9.4, 22.6, 5.7, 38.9, 14.3];
+  // The days before: quieter nights, busier afternoons, a calm weekend.
+  const before = Array.from({ length: 36 }, (_, i) => Math.round((i % 5 === 1 || i % 5 === 3 ? 6 + ((i * 7) % 30) : 1 + ((i * 3) % 5)) * (i >= 15 && i < 25 ? 0.3 : 1) * 10) / 10);
+  const costs = [...before, ...last12];
   return costs.map((cost, i) => ({ cost, startTime: now - (costs.length - 1 - i) * 5 * 3_600_000, active: i === costs.length - 1 }));
 }
 
