@@ -6,6 +6,7 @@
  * tested; `readUsage` runs the commands.
  */
 import { execFile } from 'node:child_process';
+import { commandFor } from '@kiosko/sdk';
 
 /**
  * Shapes `ccusage --json` really returns. Careful: `daily`/`weekly`/`monthly`
@@ -221,7 +222,9 @@ export function execRunner(bin: string, signal?: AbortSignal): Run {
   const [cmd = 'ccusage', ...pre] = bin.trim().split(/\s+/).filter(Boolean);
   return (args) =>
     new Promise((resolve, reject) => {
-      execFile(cmd, [...pre, ...args], { timeout: 30_000, maxBuffer: 32 * 1024 * 1024, signal }, (err, stdout) => {
+      // On Windows `ccusage` and `npx` are .cmd shims, which execFile can't run by itself.
+      const c = commandFor(cmd, [...pre, ...args]);
+      execFile(c.file, c.args, { timeout: 30_000, maxBuffer: 32 * 1024 * 1024, signal, windowsHide: true, ...(c.windowsVerbatimArguments ? { windowsVerbatimArguments: true } : {}) }, (err, stdout) => {
         if (err) return reject(err);
         try {
           resolve(JSON.parse(stdout));
