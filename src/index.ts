@@ -116,6 +116,8 @@ export default definePlugin({
   id: 'usage',
   name: { en: 'AI usage', es: 'Consumo de IA' },
   version: '0.2.0',
+  sdk: '^0.2.0',
+  permissions: { exec: ['ccusage'] },
   description: {
     en: 'How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.',
     es: 'Cuánto Claude Code estás gastando, según ccusage: ventanas de límite o gasto, tokens por modelo y gasto por bloque.',

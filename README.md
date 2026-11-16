@@ -20,6 +20,10 @@ npm install --prefix ~/.config/kiosko/plugins kiosko-plugin-usage
 
 - [`ccusage`](https://github.com/ryoppippi/ccusage) on the `PATH` (`npm install -g ccusage`).
 
+## What it does on your machine
+
+- **Runs**: `ccusage`.
+
 ## Widgets
 
 ### Usage — `usage/rail`
