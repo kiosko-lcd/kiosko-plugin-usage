@@ -115,7 +115,7 @@ export const blocksWidget = defineWidget({
 export default definePlugin({
   id: 'usage',
   name: { en: 'AI usage', es: 'Consumo de IA' },
-  version: '0.2.0',
+  version: '0.2.1',
   sdk: '^0.2.0',
   permissions: { exec: ['ccusage'] },
   description: {
