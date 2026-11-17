@@ -1,0 +1,414 @@
+{
+  "manifest": 1,
+  "id": "usage",
+  "package": "kiosko-plugin-usage",
+  "name": {
+    "en": "AI usage",
+    "es": "Consumo de IA"
+  },
+  "version": "0.2.1",
+  "description": {
+    "en": "How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.",
+    "es": "Cuánto Claude Code estás gastando, según ccusage: ventanas de límite o gasto, tokens por modelo y gasto por bloque."
+  },
+  "author": "Kiosko",
+  "license": "MIT",
+  "homepage": "https://github.com/kiosko-lcd/kiosko-plugin-usage#readme",
+  "repository": "https://github.com/kiosko-lcd/kiosko-plugin-usage.git",
+  "icon": "gauge",
+  "sdk": "^0.2.0",
+  "platforms": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "languages": [
+    "en",
+    "es"
+  ],
+  "categories": [
+    "agents"
+  ],
+  "tags": [
+    "claude",
+    "ccusage",
+    "tokens",
+    "cost",
+    "sparkline"
+  ],
+  "permissions": {
+    "exec": [
+      "ccusage"
+    ]
+  },
+  "riskyOptions": [
+    {
+      "path": "usage/ccusage: bin",
+      "risk": [
+        "exec"
+      ],
+      "secret": false
+    }
+  ],
+  "requires": [],
+  "optional": [],
+  "widgets": [
+    {
+      "type": "usage/rail",
+      "name": {
+        "en": "Usage",
+        "es": "Consumo"
+      },
+      "description": {
+        "en": "Limit windows (or spend against your caps) as bars with their reset time, and today’s tokens by model.",
+        "es": "Las ventanas de límite (o el gasto contra tus topes) en barras con su reinicio, y los tokens de hoy por modelo."
+      },
+      "icon": "gauge",
+      "category": "agents",
+      "tags": [
+        "claude",
+        "ccusage",
+        "tokens",
+        "cost"
+      ],
+      "size": {
+        "min": {
+          "w": 220,
+          "h": 200
+        },
+        "preferred": {
+          "w": 380,
+          "h": 390
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "usage/ccusage"
+      ],
+      "options": {
+        "default": {
+          "bars": 2,
+          "models": 3,
+          "warn": 60,
+          "alert": 85
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "bars": {
+            "title": "Bars",
+            "default": 2,
+            "x-ui": {
+              "label": {
+                "en": "Bars",
+                "es": "Barras"
+              }
+            },
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "models": {
+            "title": "Models listed",
+            "description": "0 = only today's total.",
+            "default": 3,
+            "x-ui": {
+              "label": {
+                "en": "Models listed",
+                "es": "Modelos listados"
+              },
+              "help": {
+                "en": "0 = only today's total.",
+                "es": "0 = solo el total de hoy."
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "warn": {
+            "title": "Amber from",
+            "description": "How full a bar is.",
+            "default": 60,
+            "x-ui": {
+              "label": {
+                "en": "Amber from",
+                "es": "Ámbar desde"
+              },
+              "help": {
+                "en": "How full a bar is.",
+                "es": "Lo llena que está una barra."
+              },
+              "unit": "%",
+              "slider": true
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "alert": {
+            "title": "Red from",
+            "default": 85,
+            "x-ui": {
+              "label": {
+                "en": "Red from",
+                "es": "Rojo desde"
+              },
+              "unit": "%",
+              "slider": true
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          }
+        }
+      },
+      "screenshot": "docs/rail.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "usage/blocks",
+      "name": {
+        "en": "Spend per 5-hour block",
+        "es": "Gasto por bloque (5 h)"
+      },
+      "description": {
+        "en": "The equivalent cost of the last 5-hour blocks (twelve by default), the running one highlighted: is today unusual?",
+        "es": "El coste equivalente de los últimos bloques de 5 horas (doce por defecto), con el actual destacado: ¿hoy es un día raro?"
+      },
+      "icon": "bar-chart",
+      "category": "agents",
+      "tags": [
+        "claude",
+        "ccusage",
+        "cost",
+        "sparkline"
+      ],
+      "size": {
+        "min": {
+          "w": 200,
+          "h": 100
+        },
+        "preferred": {
+          "w": 600,
+          "h": 200
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "usage/ccusage"
+      ],
+      "options": {
+        "default": {
+          "blocks": 12
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "blocks": {
+            "title": "Blocks shown",
+            "description": "12 = two and a half days; 48 = ten.",
+            "default": 12,
+            "x-ui": {
+              "label": {
+                "en": "Blocks shown",
+                "es": "Bloques mostrados"
+              },
+              "help": {
+                "en": "12 = two and a half days; 48 = ten.",
+                "es": "12 = dos días y medio; 48 = diez."
+              }
+            },
+            "type": "integer",
+            "minimum": 4,
+            "maximum": 48
+          }
+        }
+      },
+      "screenshot": "docs/blocks.png",
+      "animated": false,
+      "urgent": false
+    }
+  ],
+  "sources": [
+    {
+      "type": "usage/ccusage",
+      "name": {
+        "en": "Claude Code usage (ccusage)",
+        "es": "Consumo de Claude Code (ccusage)"
+      },
+      "description": {
+        "en": "Runs ccusage, every minute by default and never more often. Each run walks the whole Claude Code history (a few seconds of CPU).",
+        "es": "Ejecuta ccusage, cada minuto por defecto y nunca más a menudo. Cada pasada recorre todo el historial de Claude Code (unos segundos de CPU)."
+      },
+      "polled": true,
+      "intervalMs": 60000,
+      "options": {
+        "default": {
+          "bin": "ccusage",
+          "mode": "max",
+          "dailyCap": 25,
+          "monthlyCap": 400,
+          "calibration": {
+            "metric": "cost",
+            "lookbackDays": 30,
+            "percentile": 100
+          }
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "bin": {
+            "title": "ccusage command",
+            "description": "Looked up in PATH unless it is a full path. May carry arguments, e.g. \"npx ccusage\".",
+            "default": "ccusage",
+            "x-ui": {
+              "label": {
+                "en": "ccusage command",
+                "es": "Comando de ccusage"
+              },
+              "help": {
+                "en": "Looked up in PATH unless it is a full path. May carry arguments, e.g. \"npx ccusage\".",
+                "es": "Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. \"npx ccusage\"."
+              }
+            },
+            "x-risk": "exec",
+            "type": "string"
+          },
+          "mode": {
+            "title": "Plan",
+            "default": "max",
+            "x-ui": {
+              "label": {
+                "en": "Plan",
+                "es": "Plan"
+              },
+              "labels": {
+                "max": {
+                  "en": "Subscription: limit windows",
+                  "es": "Suscripción: ventanas de límite"
+                },
+                "api": {
+                  "en": "API: spend against caps",
+                  "es": "API: gasto contra topes"
+                }
+              }
+            },
+            "type": "string",
+            "enum": [
+              "max",
+              "api"
+            ]
+          },
+          "dailyCap": {
+            "title": "Daily cap (API)",
+            "default": 25,
+            "x-ui": {
+              "label": {
+                "en": "Daily cap (API)",
+                "es": "Tope diario (API)"
+              },
+              "unit": "USD",
+              "step": 1
+            },
+            "type": "number",
+            "minimum": 0
+          },
+          "monthlyCap": {
+            "title": "Monthly cap (API)",
+            "default": 400,
+            "x-ui": {
+              "label": {
+                "en": "Monthly cap (API)",
+                "es": "Tope mensual (API)"
+              },
+              "unit": "USD",
+              "step": 10
+            },
+            "type": "number",
+            "minimum": 0
+          },
+          "calibration": {
+            "title": "Calibration (subscription)",
+            "description": "ccusage doesn’t know your plan’s limit, so a full bar is your own busiest block or week.",
+            "default": {
+              "metric": "cost",
+              "lookbackDays": 30,
+              "percentile": 100
+            },
+            "x-ui": {
+              "label": {
+                "en": "Calibration (subscription)",
+                "es": "Calibración (suscripción)"
+              },
+              "help": {
+                "en": "ccusage doesn’t know your plan’s limit, so a full bar is your own busiest block or week.",
+                "es": "ccusage no conoce el límite del plan, así que la barra llena es tu bloque o semana más cargados."
+              },
+              "advanced": true
+            },
+            "type": "object",
+            "properties": {
+              "metric": {
+                "title": "Measure",
+                "default": "cost",
+                "x-ui": {
+                  "label": {
+                    "en": "Measure",
+                    "es": "Medida"
+                  },
+                  "labels": {
+                    "cost": {
+                      "en": "Equivalent cost",
+                      "es": "Coste equivalente"
+                    },
+                    "tokens": {
+                      "en": "Tokens",
+                      "es": "Tokens"
+                    }
+                  }
+                },
+                "type": "string",
+                "enum": [
+                  "cost",
+                  "tokens"
+                ]
+              },
+              "lookbackDays": {
+                "title": "Days of history (0 = all)",
+                "default": 30,
+                "x-ui": {
+                  "label": {
+                    "en": "Days of history (0 = all)",
+                    "es": "Días de histórico (0 = todo)"
+                  }
+                },
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 365
+              },
+              "percentile": {
+                "title": "Percentile that marks 100 %",
+                "default": 100,
+                "x-ui": {
+                  "label": {
+                    "en": "Percentile that marks 100 %",
+                    "es": "Percentil que marca el 100 %"
+                  },
+                  "unit": "%",
+                  "slider": true
+                },
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "interludes": [],
+  "templates": []
+}
