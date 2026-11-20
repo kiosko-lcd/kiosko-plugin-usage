@@ -256,6 +256,7 @@ export async function readUsage(o: UsageOptions, run: Run, now = Date.now(), log
         throw new PluginError({
           en: `ccusage not found ("${o.bin}"): install it (npm install -g ccusage) or set its full path in the source options`,
           es: `No se encuentra ccusage («${o.bin}»): instálalo (npm install -g ccusage) o pon su ruta completa en las opciones de la fuente`,
+          de: `ccusage nicht gefunden („${o.bin}“): Installiere es (npm install -g ccusage) oder trage seinen vollständigen Pfad in den Optionen der Datenquelle ein`,
           'zh-Hant': `找不到 ccusage（「${o.bin}」）：請安裝它（npm install -g ccusage），或在資料來源選項中填入它的完整路徑`,
           'zh-Hans': `找不到 ccusage（“${o.bin}”）：请安装它（npm install -g ccusage），或在数据源选项中填写它的完整路径`,
         }, { cause: err });
