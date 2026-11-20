@@ -15,16 +15,16 @@ export const USAGE_SOURCE = 'usage/ccusage';
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 export const TEXT = {
-  block: { en: '5 h window', es: 'Ventana 5 h', 'zh-Hant': '5 h 時段', 'zh-Hans': '5 h 窗口' },
-  week: { en: 'Week', es: 'Semana', 'zh-Hant': '本週', 'zh-Hans': '本周' },
-  day: { en: 'Today', es: 'Hoy', 'zh-Hant': '今天', 'zh-Hans': '今天' },
-  month: { en: 'Month', es: 'Mes', 'zh-Hant': '本月', 'zh-Hans': '本月' },
-  resetsIn: { en: 'resets in {t}', es: 'reinicia en {t}', 'zh-Hant': '{t} 後重設', 'zh-Hans': '{t} 后重置' },
-  of: { en: 'of {cap}', es: 'de {cap}', 'zh-Hant': '上限 {cap}', 'zh-Hans': '上限 {cap}' },
-  tokensToday: { en: 'Tokens today', es: 'Tokens hoy', 'zh-Hant': '今日 token', 'zh-Hans': '今日 token' },
-  noData: { en: 'no ccusage data', es: 'sin datos de ccusage', 'zh-Hant': '無 ccusage 資料', 'zh-Hans': '无 ccusage 数据' },
-  peak: { en: 'peak {v}', es: 'pico {v}', 'zh-Hant': '峰值 {v}', 'zh-Hans': '峰值 {v}' },
-  current: { en: 'now {v}', es: 'ahora {v}', 'zh-Hant': '目前 {v}', 'zh-Hans': '当前 {v}' },
+  block: { en: '5 h window', es: 'Ventana 5 h', de: '5-h-Fenster', 'zh-Hant': '5 h 時段', 'zh-Hans': '5 h 窗口' },
+  week: { en: 'Week', es: 'Semana', de: 'Woche', 'zh-Hant': '本週', 'zh-Hans': '本周' },
+  day: { en: 'Today', es: 'Hoy', de: 'Heute', 'zh-Hant': '今天', 'zh-Hans': '今天' },
+  month: { en: 'Month', es: 'Mes', de: 'Monat', 'zh-Hant': '本月', 'zh-Hans': '本月' },
+  resetsIn: { en: 'resets in {t}', es: 'reinicia en {t}', de: 'Reset in {t}', 'zh-Hant': '{t} 後重設', 'zh-Hans': '{t} 后重置' },
+  of: { en: 'of {cap}', es: 'de {cap}', de: 'von {cap}', 'zh-Hant': '上限 {cap}', 'zh-Hans': '上限 {cap}' },
+  tokensToday: { en: 'Tokens today', es: 'Tokens hoy', de: 'Tokens heute', 'zh-Hant': '今日 token', 'zh-Hans': '今日 token' },
+  noData: { en: 'no ccusage data', es: 'sin datos de ccusage', de: 'keine ccusage-Daten', 'zh-Hant': '無 ccusage 資料', 'zh-Hans': '无 ccusage 数据' },
+  peak: { en: 'peak {v}', es: 'pico {v}', de: 'Spitze {v}', 'zh-Hant': '峰值 {v}', 'zh-Hans': '峰值 {v}' },
+  current: { en: 'now {v}', es: 'ahora {v}', de: 'aktuell {v}', 'zh-Hant': '目前 {v}', 'zh-Hans': '当前 {v}' },
 } satisfies Record<string, Localized>;
 
 const fill = (text: string, vars: Record<string, string>) => text.replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? '');
