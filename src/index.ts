@@ -124,6 +124,7 @@ export default definePlugin({
   id: 'usage',
   name: { en: 'AI usage', es: 'Consumo de IA', 'zh-Hant': 'AI 用量', 'zh-Hans': 'AI 用量' },
   version: '0.2.1',
+  languages: ['en', 'es', 'zh-Hant', 'zh-Hans'],
   sdk: '^0.2.0',
   permissions: { exec: ['ccusage'] },
   description: {
