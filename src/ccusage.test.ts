@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { errorMessage } from '@kiosko/sdk';
 import { buildSnapshot, percentile, readUsage, safeRatio, shortModel, type Run, type UsageOptions } from './ccusage.ts';
 
 const now = Date.parse('2026-11-05T10:42:00Z');
@@ -57,6 +58,7 @@ test('readUsage: a missing binary is a clear error', async () => {
     throw Object.assign(new Error('spawn ccusage ENOENT'), { code: 'ENOENT' });
   };
   await assert.rejects(readUsage(MAX, run, now), /ccusage not found.*npm install -g ccusage/);
+  await assert.rejects(readUsage(MAX, run, now), (e: unknown) => /^找不到 ccusage（「.*」）：請安裝它/.test(errorMessage(e, 'zh-TW')));
 });
 
 test('readUsage: one failing command gives a partial, stale snapshot; all failing throws', async () => {
