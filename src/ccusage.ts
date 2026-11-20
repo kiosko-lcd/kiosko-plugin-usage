@@ -6,7 +6,7 @@
  * tested; `readUsage` runs the commands.
  */
 import { execFile } from 'node:child_process';
-import { commandFor } from '@kiosko/sdk';
+import { commandFor, PluginError } from '@kiosko/sdk';
 
 /**
  * Shapes `ccusage --json` really returns. Careful: `daily`/`weekly`/`monthly`
@@ -253,7 +253,12 @@ export async function readUsage(o: UsageOptions, run: Run, now = Date.now(), log
       reports[cmd] = (await run([cmd, '--json'])) as never;
     } catch (err) {
       if (isMissing(err)) {
-        throw new Error(`ccusage not found ("${o.bin}"): install it (npm install -g ccusage) or set its full path in the source options`);
+        throw new PluginError({
+          en: `ccusage not found ("${o.bin}"): install it (npm install -g ccusage) or set its full path in the source options`,
+          es: `No se encuentra ccusage («${o.bin}»): instálalo (npm install -g ccusage) o pon su ruta completa en las opciones de la fuente`,
+          'zh-Hant': `找不到 ccusage（「${o.bin}」）：請安裝它（npm install -g ccusage），或在資料來源選項中填入它的完整路徑`,
+          'zh-Hans': `找不到 ccusage（“${o.bin}”）：请安装它（npm install -g ccusage），或在数据源选项中填写它的完整路径`,
+        }, { cause: err });
       }
       errors.push(`${cmd}: ${message(err)}`);
       log(`ccusage ${cmd} failed: ${message(err)}`);
