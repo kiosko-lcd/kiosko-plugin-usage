@@ -9,7 +9,7 @@
     "zh-Hant": "AI 用量",
     "zh-Hans": "AI 用量"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": {
     "en": "How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.",
     "es": "Cuánto Claude Code estás gastando, según ccusage: ventanas de límite o gasto, tokens por modelo y gasto por bloque.",
@@ -503,5 +503,9 @@
     }
   ],
   "interludes": [],
-  "templates": []
+  "templates": [],
+  "support": {
+    "issues": "https://github.com/kiosko-lcd/kiosko-plugin-usage/issues",
+    "docs": "https://github.com/kiosko-lcd/kiosko-plugin-usage#readme"
+  }
 }
