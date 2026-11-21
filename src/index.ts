@@ -26,7 +26,7 @@ export const ccusageSource = defineSource({
       default: 'ccusage',
       risk: 'exec',
       label: { en: 'ccusage command', es: 'Comando de ccusage', de: 'ccusage-Befehl', 'zh-Hant': 'ccusage 指令', 'zh-Hans': 'ccusage 命令' },
-      help: { en: 'Looked up in PATH unless it is a full path. May carry arguments, e.g. "npx ccusage".', es: 'Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. "npx ccusage".', de: 'Wird im PATH gesucht, sofern es kein vollständiger Pfad ist. Darf Argumente enthalten, z. B. „npx ccusage“.', 'zh-Hant': '除非是完整路徑，否則會在 PATH 中尋找。可帶參數，例如 "npx ccusage"。', 'zh-Hans': '除非是完整路径，否则在 PATH 中查找。可带参数，例如 "npx ccusage"。' },
+      help: { en: 'Looked up in PATH unless it is a full path. May carry arguments, e.g. "npx ccusage".', es: 'Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. "npx ccusage".', de: 'Wird im PATH gesucht, sofern es kein vollständiger Pfad ist. Darf Argumente enthalten, z. B. „npx ccusage“.', 'zh-Hant': '除非是完整路徑，否則會在 PATH 中尋找。可帶參數，例如「npx ccusage」。', 'zh-Hans': '除非是完整路径，否则在 PATH 中查找。可带参数，例如“npx ccusage”。' },
     }),
     mode: t.enum(['max', 'api'] as const, {
       label: { en: 'Plan', es: 'Plan', de: 'Tarif', 'zh-Hant': '方案', 'zh-Hans': '套餐' },
@@ -63,7 +63,7 @@ export const ccusageSource = defineSource({
 });
 
 const thresholds = {
-  warn: t.integer({ default: 60, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Amber from', es: 'Ámbar desde', de: 'Gelb ab', 'zh-Hant': '琥珀色門檻', 'zh-Hans': '琥珀色阈值' }, help: { en: 'How full a bar is.', es: 'Lo llena que está una barra.', de: 'Wie voll ein Balken ist.', 'zh-Hant': '長條的填滿程度。', 'zh-Hans': '条形的填充程度。' } }),
+  warn: t.integer({ default: 60, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Amber from', es: 'Ámbar desde', de: 'Gelb ab', 'zh-Hant': '琥珀色門檻', 'zh-Hans': '琥珀色阈值' }, help: { en: 'How full a bar is.', es: 'Lo llena que está una barra.', de: 'Wie voll ein Balken ist.', 'zh-Hant': '長條的填滿程度。', 'zh-Hans': '进度条的填充程度。' } }),
   alert: t.integer({ default: 85, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Red from', es: 'Rojo desde', de: 'Rot ab', 'zh-Hant': '紅色門檻', 'zh-Hans': '红色阈值' } }),
 };
 
@@ -75,14 +75,14 @@ export const railWidget = defineWidget({
     es: 'Las ventanas de límite (o el gasto contra tus topes) en barras con su reinicio, y los tokens de hoy por modelo.',
     de: 'Limit-Fenster (oder Ausgaben gegen deine Obergrenzen) als Balken mit ihrer Reset-Zeit, und die heutigen Tokens nach Modell.',
     'zh-Hant': '以長條顯示各限制時段（或相對於上限的花費）及其重設時間，並列出今日各模型的 token。',
-    'zh-Hans': '以条形显示各限额窗口（或相对上限的花费）及其重置时间，并列出今日各模型的 token。',
+    'zh-Hans': '以进度条显示各限额窗口（或相对上限的花费）及其重置时间，并列出今日各模型的 token。',
   },
   icon: 'gauge',
   category: 'agents',
   tags: ['claude', 'ccusage', 'tokens', 'cost'],
   size: { min: { w: 220, h: 200 }, preferred: { w: 380, h: 390 } },
   options: t.object({
-    bars: t.integer({ default: 2, min: 1, max: 2, label: { en: 'Bars', es: 'Barras', de: 'Balken', 'zh-Hant': '長條', 'zh-Hans': '条形' } }),
+    bars: t.integer({ default: 2, min: 1, max: 2, label: { en: 'Bars', es: 'Barras', de: 'Balken', 'zh-Hant': '長條數', 'zh-Hans': '进度条数' } }),
     models: t.integer({ default: 3, min: 0, max: 8, label: { en: 'Models listed', es: 'Modelos listados', de: 'Aufgeführte Modelle', 'zh-Hant': '列出的模型數', 'zh-Hans': '列出的模型数' }, help: { en: '0 = only today\'s total.', es: '0 = solo el total de hoy.', de: '0 = nur die heutige Summe.', 'zh-Hant': '0 = 僅顯示今日總計。', 'zh-Hans': '0 = 仅显示今日总计。' } }),
     ...thresholds,
   }),
@@ -127,7 +127,7 @@ export const blocksWidget = defineWidget({
 export default definePlugin({
   id: 'usage',
   name: { en: 'AI usage', es: 'Consumo de IA', de: 'KI-Nutzung', 'zh-Hant': 'AI 用量', 'zh-Hans': 'AI 用量' },
-  version: '0.2.2',
+  version: '0.2.3',
   languages: ['en', 'es', 'de', 'zh-Hant', 'zh-Hans'],
   sdk: '^0.2.0',
   permissions: { exec: ['ccusage'] },
