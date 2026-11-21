@@ -111,7 +111,7 @@
         "es": "Las ventanas de límite (o el gasto contra tus topes) en barras con su reinicio, y los tokens de hoy por modelo.",
         "de": "Limit-Fenster (oder Ausgaben gegen deine Obergrenzen) als Balken mit ihrer Reset-Zeit, und die heutigen Tokens nach Modell.",
         "zh-Hant": "以長條顯示各限制時段（或相對於上限的花費）及其重設時間，並列出今日各模型的 token。",
-        "zh-Hans": "以条形显示各限额窗口（或相对上限的花费）及其重置时间，并列出今日各模型的 token。"
+        "zh-Hans": "以进度条显示各限额窗口（或相对上限的花费）及其重置时间，并列出今日各模型的 token。"
       },
       "icon": "gauge",
       "category": "agents",
@@ -153,8 +153,8 @@
                 "en": "Bars",
                 "es": "Barras",
                 "de": "Balken",
-                "zh-Hant": "長條",
-                "zh-Hans": "条形"
+                "zh-Hant": "長條數",
+                "zh-Hans": "进度条数"
               }
             },
             "type": "integer",
@@ -202,7 +202,7 @@
                 "es": "Lo llena que está una barra.",
                 "de": "Wie voll ein Balken ist.",
                 "zh-Hant": "長條的填滿程度。",
-                "zh-Hans": "条形的填充程度。"
+                "zh-Hans": "进度条的填充程度。"
               },
               "unit": "%",
               "slider": true
@@ -576,8 +576,8 @@
                 "en": "Looked up in PATH unless it is a full path. May carry arguments, e.g. \"npx ccusage\".",
                 "es": "Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. \"npx ccusage\".",
                 "de": "Wird im PATH gesucht, sofern es kein vollständiger Pfad ist. Darf Argumente enthalten, z. B. „npx ccusage“.",
-                "zh-Hant": "除非是完整路徑，否則會在 PATH 中尋找。可帶參數，例如 \"npx ccusage\"。",
-                "zh-Hans": "除非是完整路径，否则在 PATH 中查找。可带参数，例如 \"npx ccusage\"。"
+                "zh-Hant": "除非是完整路徑，否則會在 PATH 中尋找。可帶參數，例如「npx ccusage」。",
+                "zh-Hans": "除非是完整路径，否则在 PATH 中查找。可带参数，例如“npx ccusage”。"
               }
             },
             "x-risk": "exec",
