@@ -1,7 +1,7 @@
 {
   "name": "kiosko-plugin-usage",
-  "version": "0.2.3",
-  "description": "Claude Code usage from ccusage: limit windows or spend against caps, tokens by model and spend per 5-hour block.",
+  "version": "0.3.0",
+  "description": "AI usage on a Kiosko panel: DeepSeek and Kimi balances, OpenAI spend, and coding agents (Claude Code, Codex, Kimi CLI, Qwen Code…) from ccusage.",
   "type": "module",
   "license": "MIT",
   "author": "Loksly <info@kioskolcd.dev> (https://kioskolcd.dev)",
