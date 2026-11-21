@@ -9,13 +9,13 @@
     "zh-Hant": "AI 用量",
     "zh-Hans": "AI 用量"
   },
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": {
-    "en": "How much Claude Code you are burning, from ccusage: limit windows or spend, tokens by model, spend per block.",
-    "es": "Cuánto Claude Code estás gastando, según ccusage: ventanas de límite o gasto, tokens por modelo y gasto por bloque.",
-    "de": "Wie viel Claude Code du verbrauchst, laut ccusage: Limit-Fenster oder Ausgaben, Tokens nach Modell, Ausgaben pro Block.",
-    "zh-Hant": "你用掉了多少 Claude Code，資料來自 ccusage：限制時段或花費、各模型的 token、每個區塊的花費。",
-    "zh-Hans": "你消耗了多少 Claude Code，数据来自 ccusage：限额窗口或花费、各模型的 token、每个区块的花费。"
+    "en": "What your AI costs: DeepSeek and Kimi balances, OpenAI spend, and the coding agents on this machine (Claude Code, Codex, Kimi CLI, Qwen Code…) from ccusage.",
+    "es": "Lo que te cuesta la IA: saldo de DeepSeek y Kimi, gasto de OpenAI y los agentes de programación de esta máquina (Claude Code, Codex, Kimi CLI, Qwen Code…) según ccusage.",
+    "de": "Was dich KI kostet: Guthaben bei DeepSeek und Kimi, Ausgaben bei OpenAI und die Coding-Agenten auf diesem Rechner (Claude Code, Codex, Kimi CLI, Qwen Code …) laut ccusage.",
+    "zh-Hant": "你的 AI 花費：DeepSeek 與 Kimi 餘額、OpenAI 花費，以及 ccusage 讀到的本機程式設計代理（Claude Code、Codex、Kimi CLI、Qwen Code……）用量。",
+    "zh-Hans": "你的 AI 开销：DeepSeek 与 Kimi 余额、OpenAI 消费，以及 ccusage 读到的本机编程智能体（Claude Code、Codex、Kimi CLI、Qwen Code……）用量。"
   },
   "author": "Kiosko",
   "license": "MIT",
@@ -43,16 +43,51 @@
     "ccusage",
     "tokens",
     "cost",
-    "sparkline"
+    "sparkline",
+    "deepseek",
+    "kimi",
+    "moonshot",
+    "openai",
+    "balance",
+    "codex",
+    "qwen"
   ],
   "permissions": {
     "exec": [
       "ccusage"
+    ],
+    "network": [
+      "api.deepseek.com",
+      "api.moonshot.cn",
+      "api.moonshot.ai",
+      "api.openai.com"
     ]
   },
   "riskyOptions": [
     {
       "path": "usage/ccusage: bin",
+      "risk": [
+        "exec"
+      ],
+      "secret": false
+    },
+    {
+      "path": "usage/accounts: deepseek.apiKey",
+      "risk": [],
+      "secret": true
+    },
+    {
+      "path": "usage/accounts: kimi.apiKey",
+      "risk": [],
+      "secret": true
+    },
+    {
+      "path": "usage/accounts: openai.adminKey",
+      "risk": [],
+      "secret": true
+    },
+    {
+      "path": "usage/agents: bin",
       "risk": [
         "exec"
       ],
@@ -272,6 +307,221 @@
         }
       },
       "screenshot": "docs/blocks.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "usage/balance",
+      "name": {
+        "en": "AI balance",
+        "es": "Saldo de IA",
+        "de": "KI-Guthaben",
+        "zh-Hant": "AI 餘額",
+        "zh-Hans": "AI 余额"
+      },
+      "description": {
+        "en": "What is left on each AI account (DeepSeek, Kimi) in its own currency, amber when it runs low; OpenAI’s spend this month against your budget.",
+        "es": "Lo que queda en cada cuenta de IA (DeepSeek, Kimi) en su moneda, en ámbar cuando queda poco; el gasto de OpenAI este mes contra tu presupuesto.",
+        "de": "Was auf jedem KI-Konto (DeepSeek, Kimi) in seiner Währung übrig ist, gelb wenn es knapp wird; die Ausgaben bei OpenAI in diesem Monat gegen dein Budget.",
+        "zh-Hant": "各 AI 帳戶（DeepSeek、Kimi）以原幣別顯示的剩餘餘額，偏低時轉為琥珀色；以及 OpenAI 本月花費對照預算。",
+        "zh-Hans": "各 AI 账户（DeepSeek、Kimi）以原币种显示的剩余余额，偏低时变为琥珀色；以及 OpenAI 本月消费对照预算。"
+      },
+      "icon": "wallet",
+      "category": "agents",
+      "tags": [
+        "deepseek",
+        "kimi",
+        "moonshot",
+        "openai",
+        "balance",
+        "cost"
+      ],
+      "size": {
+        "min": {
+          "w": 160,
+          "h": 80
+        },
+        "preferred": {
+          "w": 600,
+          "h": 200
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "usage/accounts"
+      ],
+      "options": {
+        "default": {
+          "models": 2
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "models": {
+            "title": "Models listed",
+            "description": "Today’s tokens by model, where the provider gives them (OpenAI).",
+            "default": 2,
+            "x-ui": {
+              "label": {
+                "en": "Models listed",
+                "es": "Modelos listados",
+                "de": "Aufgeführte Modelle",
+                "zh-Hant": "列出的模型數",
+                "zh-Hans": "列出的模型数"
+              },
+              "help": {
+                "en": "Today’s tokens by model, where the provider gives them (OpenAI).",
+                "es": "Tokens de hoy por modelo, donde el proveedor los da (OpenAI).",
+                "de": "Heutige Tokens nach Modell, wo der Anbieter sie liefert (OpenAI).",
+                "zh-Hant": "今日各模型的 token，限服務商有提供者（OpenAI）。",
+                "zh-Hans": "今日各模型的 token，限服务商有提供的（OpenAI）。"
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          }
+        }
+      },
+      "screenshot": "docs/balance.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "usage/summary",
+      "name": {
+        "en": "AI accounts at a glance",
+        "es": "Cuentas de IA de un vistazo",
+        "de": "KI-Konten auf einen Blick",
+        "zh-Hant": "AI 帳戶一覽",
+        "zh-Hans": "AI 账户一览"
+      },
+      "description": {
+        "en": "One line per AI account: its balance or this month’s spend, and a word when it runs low or can’t be read. For narrow strips.",
+        "es": "Una línea por cuenta de IA: su saldo o el gasto del mes, y una palabra cuando queda poco o no se puede leer. Para tiras estrechas.",
+        "de": "Eine Zeile pro KI-Konto: Guthaben oder Ausgaben des Monats, und ein Wort, wenn es knapp wird oder nicht lesbar ist. Für schmale Streifen.",
+        "zh-Hant": "每個 AI 帳戶一行：餘額或本月花費，偏低或無法讀取時附上提示。適合窄長條。",
+        "zh-Hans": "每个 AI 账户一行：余额或本月消费，偏低或无法读取时附上提示。适合窄长条。"
+      },
+      "icon": "list",
+      "category": "agents",
+      "tags": [
+        "deepseek",
+        "kimi",
+        "moonshot",
+        "openai",
+        "balance",
+        "cost"
+      ],
+      "size": {
+        "min": {
+          "w": 140,
+          "h": 40
+        },
+        "preferred": {
+          "w": 360,
+          "h": 120
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "usage/accounts"
+      ],
+      "options": null,
+      "screenshot": "docs/summary.png",
+      "animated": false,
+      "urgent": false
+    },
+    {
+      "type": "usage/agents",
+      "name": {
+        "en": "Coding agents",
+        "es": "Agentes de programación",
+        "de": "Coding-Agenten",
+        "zh-Hant": "程式設計代理",
+        "zh-Hans": "编程智能体"
+      },
+      "description": {
+        "en": "Each coding agent on this machine (Claude Code, Codex, Kimi CLI, Qwen Code…): tokens and equivalent cost today, cost this month, and today’s models.",
+        "es": "Cada agente de programación de esta máquina (Claude Code, Codex, Kimi CLI, Qwen Code…): tokens y coste equivalente de hoy, coste del mes y los modelos de hoy.",
+        "de": "Jeder Coding-Agent auf diesem Rechner (Claude Code, Codex, Kimi CLI, Qwen Code …): Tokens und Kostengegenwert heute, Kosten diesen Monat und die heutigen Modelle.",
+        "zh-Hant": "本機每個程式設計代理（Claude Code、Codex、Kimi CLI、Qwen Code……）：今日 token 與等值成本、本月成本，以及今日使用的模型。",
+        "zh-Hans": "本机每个编程智能体（Claude Code、Codex、Kimi CLI、Qwen Code……）：今日 token 与等效成本、本月成本，以及今日使用的模型。"
+      },
+      "icon": "bot",
+      "category": "agents",
+      "tags": [
+        "ccusage",
+        "codex",
+        "kimi",
+        "qwen",
+        "claude",
+        "tokens",
+        "cost"
+      ],
+      "size": {
+        "min": {
+          "w": 220,
+          "h": 100
+        },
+        "preferred": {
+          "w": 480,
+          "h": 260
+        }
+      },
+      "chrome": "card",
+      "sources": [
+        "usage/agents"
+      ],
+      "options": {
+        "default": {
+          "models": 3,
+          "month": true
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "models": {
+            "title": "Models listed",
+            "description": "Under the table, if there is room.",
+            "default": 3,
+            "x-ui": {
+              "label": {
+                "en": "Models listed",
+                "es": "Modelos listados",
+                "de": "Aufgeführte Modelle",
+                "zh-Hant": "列出的模型數",
+                "zh-Hans": "列出的模型数"
+              },
+              "help": {
+                "en": "Under the table, if there is room.",
+                "es": "Bajo la tabla, si cabe.",
+                "de": "Unter der Tabelle, wenn Platz ist.",
+                "zh-Hant": "在表格下方，有空間時顯示。",
+                "zh-Hans": "在表格下方，有空间时显示。"
+              }
+            },
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "month": {
+            "title": "Show this month",
+            "default": true,
+            "x-ui": {
+              "label": {
+                "en": "Show this month",
+                "es": "Mostrar el mes",
+                "de": "Diesen Monat zeigen",
+                "zh-Hant": "顯示本月",
+                "zh-Hans": "显示本月"
+              }
+            },
+            "type": "boolean"
+          }
+        }
+      },
+      "screenshot": "docs/agents.png",
       "animated": false,
       "urgent": false
     }
@@ -497,6 +747,357 @@
                 "maximum": 100
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "type": "usage/accounts",
+      "name": {
+        "en": "AI accounts (balance and spend)",
+        "es": "Cuentas de IA (saldo y gasto)",
+        "de": "KI-Konten (Guthaben und Ausgaben)",
+        "zh-Hant": "AI 帳戶（餘額與花費）",
+        "zh-Hans": "AI 账户（余额与消费）"
+      },
+      "description": {
+        "en": "Asks each provider with a key for its balance or spend, every 5 minutes by default and never more often than every 2. A provider that fails waits longer before the next try (5 min, then 10, 20… up to an hour).",
+        "es": "Pregunta a cada proveedor con clave por su saldo o su gasto, cada 5 minutos por defecto y nunca más de una vez cada 2. Un proveedor que falla espera más antes del siguiente intento (5 min, luego 10, 20… hasta una hora).",
+        "de": "Fragt jeden Anbieter mit Schlüssel nach Guthaben oder Ausgaben, standardmäßig alle 5 Minuten und nie öfter als alle 2. Ein Anbieter, der ausfällt, wartet länger bis zum nächsten Versuch (5 min, dann 10, 20 … bis zu einer Stunde).",
+        "zh-Hant": "向每個已填金鑰的服務商查詢餘額或花費，預設每 5 分鐘一次，最快每 2 分鐘一次。查詢失敗的服務商會等更久再試（5 分鐘，接著 10、20……最長一小時）。",
+        "zh-Hans": "向每个已填密钥的服务商查询余额或消费，默认每 5 分钟一次，最快每 2 分钟一次。查询失败的服务商会等更久再试（5 分钟，然后 10、20……最长一小时）。"
+      },
+      "polled": true,
+      "intervalMs": 300000,
+      "options": {
+        "default": {
+          "deepseek": {
+            "apiKey": "",
+            "lowBalance": 10
+          },
+          "kimi": {
+            "apiKey": "",
+            "region": "cn",
+            "lowBalance": 10
+          },
+          "openai": {
+            "adminKey": "",
+            "monthlyBudget": 0
+          }
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "deepseek": {
+            "title": "DeepSeek",
+            "default": {
+              "apiKey": "",
+              "lowBalance": 10
+            },
+            "x-ui": {
+              "label": {
+                "en": "DeepSeek",
+                "es": "DeepSeek",
+                "de": "DeepSeek",
+                "zh-Hant": "DeepSeek",
+                "zh-Hans": "DeepSeek"
+              }
+            },
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "title": "API key",
+                "description": "From platform.deepseek.com → API keys. Mainland China and international use the same platform. Secret: leave it empty (or a placeholder such as \"<token>\"). Kiosko keeps the value it already has, or asks for it in the editor.",
+                "default": "",
+                "x-ui": {
+                  "label": {
+                    "en": "API key",
+                    "es": "Clave de API",
+                    "de": "API-Schlüssel",
+                    "zh-Hant": "API 金鑰",
+                    "zh-Hans": "API 密钥"
+                  },
+                  "help": {
+                    "en": "From platform.deepseek.com → API keys. Mainland China and international use the same platform.",
+                    "es": "En platform.deepseek.com → API keys. China continental y el resto usan la misma plataforma.",
+                    "de": "Unter platform.deepseek.com → API keys. Festlandchina und international nutzen dieselbe Plattform.",
+                    "zh-Hant": "於 platform.deepseek.com → API keys 建立。中國大陸與國際使用同一平台。",
+                    "zh-Hans": "在 platform.deepseek.com → API keys 创建。中国大陆与海外使用同一平台。"
+                  },
+                  "secret": true
+                },
+                "x-secret": true,
+                "type": "string"
+              },
+              "lowBalance": {
+                "title": "Warn below",
+                "description": "In the account’s own currency. 0 = never.",
+                "default": 10,
+                "x-ui": {
+                  "label": {
+                    "en": "Warn below",
+                    "es": "Avisar por debajo de",
+                    "de": "Warnen unter",
+                    "zh-Hant": "低於此額度時提醒",
+                    "zh-Hans": "低于此额度时提醒"
+                  },
+                  "help": {
+                    "en": "In the account’s own currency. 0 = never.",
+                    "es": "En la moneda de la cuenta. 0 = nunca.",
+                    "de": "In der Währung des Kontos. 0 = nie.",
+                    "zh-Hant": "以帳戶本身的幣別計。0 = 不提醒。",
+                    "zh-Hans": "以账户本身的币种计。0 = 不提醒。"
+                  },
+                  "step": 1
+                },
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "kimi": {
+            "title": "Kimi (Moonshot AI)",
+            "default": {
+              "apiKey": "",
+              "region": "cn",
+              "lowBalance": 10
+            },
+            "x-ui": {
+              "label": {
+                "en": "Kimi (Moonshot AI)",
+                "es": "Kimi (Moonshot AI)",
+                "de": "Kimi (Moonshot AI)",
+                "zh-Hant": "Kimi（月之暗面）",
+                "zh-Hans": "Kimi（月之暗面）"
+              }
+            },
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "title": "API key",
+                "description": "From platform.kimi.com (mainland China) or platform.kimi.ai (international) → API keys. A key only works on its own platform. Secret: leave it empty (or a placeholder such as \"<token>\"). Kiosko keeps the value it already has, or asks for it in the editor.",
+                "default": "",
+                "x-ui": {
+                  "label": {
+                    "en": "API key",
+                    "es": "Clave de API",
+                    "de": "API-Schlüssel",
+                    "zh-Hant": "API 金鑰",
+                    "zh-Hans": "API 密钥"
+                  },
+                  "help": {
+                    "en": "From platform.kimi.com (mainland China) or platform.kimi.ai (international) → API keys. A key only works on its own platform.",
+                    "es": "En platform.kimi.com (China continental) o platform.kimi.ai (internacional) → API keys. Cada clave sirve solo en su plataforma.",
+                    "de": "Unter platform.kimi.com (Festlandchina) oder platform.kimi.ai (international) → API keys. Ein Schlüssel gilt nur auf seiner Plattform.",
+                    "zh-Hant": "於 platform.kimi.com（中國大陸）或 platform.kimi.ai（國際）→ API 金鑰 建立。金鑰只能用於所屬平台。",
+                    "zh-Hans": "在 platform.kimi.com（中国大陆）或 platform.kimi.ai（国际）→ API Key 管理 创建。密钥只能用于所属平台。"
+                  },
+                  "secret": true
+                },
+                "x-secret": true,
+                "type": "string"
+              },
+              "region": {
+                "title": "Platform",
+                "default": "cn",
+                "x-ui": {
+                  "label": {
+                    "en": "Platform",
+                    "es": "Plataforma",
+                    "de": "Plattform",
+                    "zh-Hant": "平台",
+                    "zh-Hans": "平台"
+                  },
+                  "labels": {
+                    "cn": {
+                      "en": "Mainland China (platform.kimi.com, CNY)",
+                      "es": "China continental (platform.kimi.com, CNY)",
+                      "de": "Festlandchina (platform.kimi.com, CNY)",
+                      "zh-Hant": "中國大陸（platform.kimi.com，人民幣）",
+                      "zh-Hans": "中国大陆（platform.kimi.com，人民币）"
+                    },
+                    "global": {
+                      "en": "International (platform.kimi.ai, USD)",
+                      "es": "Internacional (platform.kimi.ai, USD)",
+                      "de": "International (platform.kimi.ai, USD)",
+                      "zh-Hant": "國際（platform.kimi.ai，美元）",
+                      "zh-Hans": "国际（platform.kimi.ai，美元）"
+                    }
+                  }
+                },
+                "type": "string",
+                "enum": [
+                  "cn",
+                  "global"
+                ]
+              },
+              "lowBalance": {
+                "title": "Warn below",
+                "description": "In the account’s own currency. 0 = never.",
+                "default": 10,
+                "x-ui": {
+                  "label": {
+                    "en": "Warn below",
+                    "es": "Avisar por debajo de",
+                    "de": "Warnen unter",
+                    "zh-Hant": "低於此額度時提醒",
+                    "zh-Hans": "低于此额度时提醒"
+                  },
+                  "help": {
+                    "en": "In the account’s own currency. 0 = never.",
+                    "es": "En la moneda de la cuenta. 0 = nunca.",
+                    "de": "In der Währung des Kontos. 0 = nie.",
+                    "zh-Hant": "以帳戶本身的幣別計。0 = 不提醒。",
+                    "zh-Hans": "以账户本身的币种计。0 = 不提醒。"
+                  },
+                  "step": 1
+                },
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "openai": {
+            "title": "OpenAI",
+            "default": {
+              "adminKey": "",
+              "monthlyBudget": 0
+            },
+            "x-ui": {
+              "label": {
+                "en": "OpenAI",
+                "es": "OpenAI",
+                "de": "OpenAI",
+                "zh-Hant": "OpenAI",
+                "zh-Hans": "OpenAI"
+              }
+            },
+            "type": "object",
+            "properties": {
+              "adminKey": {
+                "title": "Admin key",
+                "description": "An organization Admin key (platform.openai.com → Settings → Organization → Admin keys), not a project key. Secret: leave it empty (or a placeholder such as \"<token>\"). Kiosko keeps the value it already has, or asks for it in the editor.",
+                "default": "",
+                "x-ui": {
+                  "label": {
+                    "en": "Admin key",
+                    "es": "Clave de administración",
+                    "de": "Admin-Schlüssel",
+                    "zh-Hant": "管理員金鑰",
+                    "zh-Hans": "管理员密钥"
+                  },
+                  "help": {
+                    "en": "An organization Admin key (platform.openai.com → Settings → Organization → Admin keys), not a project key.",
+                    "es": "Una clave de administración de la organización (platform.openai.com → Settings → Organization → Admin keys), no una de proyecto.",
+                    "de": "Ein Admin-Schlüssel der Organisation (platform.openai.com → Settings → Organization → Admin keys), kein Projektschlüssel.",
+                    "zh-Hant": "組織的管理員金鑰（platform.openai.com → Settings → Organization → Admin keys），不是專案金鑰。",
+                    "zh-Hans": "组织的管理员密钥（platform.openai.com → Settings → Organization → Admin keys），不是项目密钥。"
+                  },
+                  "secret": true
+                },
+                "x-secret": true,
+                "type": "string"
+              },
+              "monthlyBudget": {
+                "title": "Monthly budget",
+                "description": "Amber from 80 %, red from 100 %. 0 = no bar.",
+                "default": 0,
+                "x-ui": {
+                  "label": {
+                    "en": "Monthly budget",
+                    "es": "Presupuesto mensual",
+                    "de": "Monatsbudget",
+                    "zh-Hant": "每月預算",
+                    "zh-Hans": "每月预算"
+                  },
+                  "help": {
+                    "en": "Amber from 80 %, red from 100 %. 0 = no bar.",
+                    "es": "Ámbar desde el 80 %, rojo desde el 100 %. 0 = sin barra.",
+                    "de": "Gelb ab 80 %, rot ab 100 %. 0 = kein Balken.",
+                    "zh-Hant": "達 80 % 轉為琥珀色，達 100 % 轉為紅色。0 = 不顯示長條。",
+                    "zh-Hans": "达 80 % 变为琥珀色，达 100 % 变为红色。0 = 不显示条形。"
+                  },
+                  "unit": "USD",
+                  "step": 10
+                },
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "usage/agents",
+      "name": {
+        "en": "Coding agents usage (ccusage)",
+        "es": "Consumo de agentes de programación (ccusage)",
+        "de": "Nutzung von Coding-Agenten (ccusage)",
+        "zh-Hant": "程式設計代理用量（ccusage）",
+        "zh-Hans": "编程智能体用量（ccusage）"
+      },
+      "description": {
+        "en": "Runs ccusage 20 or newer once every 2 minutes by default (never more often than every minute): today and this month for each coding agent it finds on this machine (Claude Code, Codex, Kimi CLI, Qwen Code, Gemini CLI, OpenCode…). Costs are ccusage’s estimates in USD.",
+        "es": "Ejecuta ccusage 20 o posterior cada 2 minutos por defecto (nunca más de una vez por minuto): hoy y este mes de cada agente de programación que encuentre en esta máquina (Claude Code, Codex, Kimi CLI, Qwen Code, Gemini CLI, OpenCode…). Los costes son estimaciones de ccusage en USD.",
+        "de": "Führt ccusage 20 oder neuer standardmäßig alle 2 Minuten aus (nie öfter als jede Minute): heute und diesen Monat für jeden Coding-Agenten auf diesem Rechner (Claude Code, Codex, Kimi CLI, Qwen Code, Gemini CLI, OpenCode …). Kosten sind Schätzungen von ccusage in USD.",
+        "zh-Hant": "預設每 2 分鐘執行一次 ccusage 20 以上版本（最快每分鐘一次）：列出本機每個程式設計代理（Claude Code、Codex、Kimi CLI、Qwen Code、Gemini CLI、OpenCode……）今日與本月的用量。成本為 ccusage 以美元估算的值。",
+        "zh-Hans": "默认每 2 分钟运行一次 ccusage 20 及以上版本（最快每分钟一次）：列出本机每个编程智能体（Claude Code、Codex、Kimi CLI、Qwen Code、Gemini CLI、OpenCode……）今日与本月的用量。成本为 ccusage 以美元估算的值。"
+      },
+      "polled": true,
+      "intervalMs": 120000,
+      "options": {
+        "default": {
+          "bin": "ccusage",
+          "offline": false
+        },
+        "x-ui": {},
+        "type": "object",
+        "properties": {
+          "bin": {
+            "title": "ccusage command",
+            "description": "Looked up in PATH unless it is a full path. May carry arguments, e.g. \"npx ccusage@latest\".",
+            "default": "ccusage",
+            "x-ui": {
+              "label": {
+                "en": "ccusage command",
+                "es": "Comando de ccusage",
+                "de": "ccusage-Befehl",
+                "zh-Hant": "ccusage 指令",
+                "zh-Hans": "ccusage 命令"
+              },
+              "help": {
+                "en": "Looked up in PATH unless it is a full path. May carry arguments, e.g. \"npx ccusage@latest\".",
+                "es": "Se busca en el PATH salvo que sea una ruta completa. Puede llevar argumentos, p. ej. \"npx ccusage@latest\".",
+                "de": "Wird im PATH gesucht, sofern es kein vollständiger Pfad ist. Darf Argumente enthalten, z. B. „npx ccusage@latest“.",
+                "zh-Hant": "除非是完整路徑，否則會在 PATH 中尋找。可帶參數，例如 \"npx ccusage@latest\"。",
+                "zh-Hans": "除非是完整路径，否则在 PATH 中查找。可带参数，例如 \"npx ccusage@latest\"。"
+              }
+            },
+            "x-risk": "exec",
+            "type": "string"
+          },
+          "offline": {
+            "title": "Offline prices",
+            "description": "Use the prices ccusage has cached instead of downloading them: for networks where GitHub is slow or blocked.",
+            "default": false,
+            "x-ui": {
+              "label": {
+                "en": "Offline prices",
+                "es": "Precios sin conexión",
+                "de": "Preise offline",
+                "zh-Hant": "離線價格",
+                "zh-Hans": "离线价格"
+              },
+              "help": {
+                "en": "Use the prices ccusage has cached instead of downloading them: for networks where GitHub is slow or blocked.",
+                "es": "Usa los precios que ccusage tiene guardados en vez de descargarlos: para redes donde GitHub va lento o está bloqueado.",
+                "de": "Nutzt die von ccusage zwischengespeicherten Preise, statt sie herunterzuladen: für Netze, in denen GitHub langsam oder gesperrt ist.",
+                "zh-Hant": "使用 ccusage 已快取的價格，不再下載：適合 GitHub 緩慢或無法連線的網路。",
+                "zh-Hans": "使用 ccusage 已缓存的价格，不再下载：适合 GitHub 缓慢或无法访问的网络。"
+              }
+            },
+            "type": "boolean"
           }
         }
       }
