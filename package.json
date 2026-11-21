@@ -4,7 +4,7 @@
   "description": "Claude Code usage from ccusage: limit windows or spend against caps, tokens by model and spend per 5-hour block.",
   "type": "module",
   "license": "MIT",
-  "author": "Loksly",
+  "author": "Loksly <info@kioskolcd.dev> (https://kioskolcd.dev)",
   "keywords": [
     "kiosko",
     "kiosko-plugin",
