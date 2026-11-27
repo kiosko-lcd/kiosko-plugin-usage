@@ -17,7 +17,7 @@ import { USAGE_SOURCE, drawBlocks, drawRail, level, railRatios, usageOf } from '
 import { accountsDemo, agentsDemo, usageMax } from './demo.ts';
 import { PROVIDERS, balanceLevel, createAccounts, type AccountsData } from './accounts.ts';
 import { readAgents, type AgentsSnapshot } from './agents.ts';
-import { ACCOUNTS_SOURCE, AGENTS_SOURCE, accountsOf, drawAgents, drawBalance, drawSummary } from './draw-accounts.ts';
+import { ACCOUNTS_SOURCE, AGENTS_SOURCE, accountsOf, agentsOf, drawAgents, drawBalance, drawSummary, headline } from './draw-accounts.ts';
 
 export type { UsageSnapshot, UsageWindow, UsageSpend, BlockPoint } from './ccusage.ts';
 export type { Account, AccountsData, Money } from './account.ts';
@@ -207,6 +207,19 @@ const thresholds = {
   alert: t.integer({ default: 85, min: 0, max: 100, unit: '%', slider: true, label: { en: 'Red from', es: 'Rojo desde', de: 'Rot ab', 'zh-Hant': '紅色門檻', 'zh-Hans': '红色阈值' } }),
 };
 
+// Nothing to show (the tile passes the turn): the source delivered, but
+// only what the widget paints as "no data". Undefined is loading, not empty.
+const usageEmpty = (sources: Record<string, unknown>, bars: boolean): boolean => {
+  if (sources[USAGE_SOURCE] === undefined) return false;
+  const u = usageOf(sources);
+  if (!u) return true;
+  return bars ? !!u.stale && !railRatios(u).length && !u.tokensToday : !u.blockHistory?.length;
+};
+// No account with a key, or every one failing with no figure to show.
+const accountsEmpty = (sources: Record<string, unknown>): boolean =>
+  sources[ACCOUNTS_SOURCE] !== undefined && (accountsOf(sources)?.accounts ?? []).every((a) => !!a.error && !headline(a));
+const agentsEmpty = (sources: Record<string, unknown>): boolean => sources[AGENTS_SOURCE] !== undefined && !agentsOf(sources)?.agents.length;
+
 export const railWidget = defineWidget({
   id: 'rail',
   name: { en: 'Usage', es: 'Consumo', de: 'Nutzung', 'zh-Hant': '用量', 'zh-Hans': '用量' },
@@ -236,6 +249,7 @@ export const railWidget = defineWidget({
     const u = usageOf(sources);
     return !u || !railRatios(u).some((r) => level(r, options) === 'alert');
   },
+  empty: ({ sources }) => usageEmpty(sources, true),
   demo: ({ now }) => ({ sources: { [USAGE_SOURCE]: usageMax(now) } }),
 });
 
@@ -261,6 +275,7 @@ export const blocksWidget = defineWidget({
     drawBlocks(g, ctx, ctx.options.blocks);
   },
   idle: () => true,
+  empty: ({ sources }) => usageEmpty(sources, false),
   demo: ({ now }) => ({ sources: { [USAGE_SOURCE]: usageMax(now) } }),
 });
 
@@ -290,6 +305,7 @@ export const balanceWidget = defineWidget({
   },
   // Ambient: worth lighting the panel for only when an account runs low.
   idle: ({ sources }) => !(accountsOf(sources)?.accounts ?? []).some((a) => !a.error && balanceLevel(a) !== 'ok'),
+  empty: ({ sources }) => accountsEmpty(sources),
   demo: ({ now, locale }) => ({ sources: { [ACCOUNTS_SOURCE]: accountsDemo(now, locale) } }),
 });
 
@@ -313,6 +329,7 @@ export const summaryWidget = defineWidget({
     drawSummary(g, ctx);
   },
   idle: ({ sources }) => !(accountsOf(sources)?.accounts ?? []).some((a) => !a.error && balanceLevel(a) !== 'ok'),
+  empty: ({ sources }) => accountsEmpty(sources),
   demo: ({ now, locale }) => ({ sources: { [ACCOUNTS_SOURCE]: accountsDemo(now, locale) } }),
 });
 
@@ -340,13 +357,14 @@ export const agentsWidget = defineWidget({
     drawAgents(g, ctx, ctx.options);
   },
   idle: () => true,
+  empty: ({ sources }) => agentsEmpty(sources),
   demo: ({ now, locale }) => ({ sources: { [AGENTS_SOURCE]: agentsDemo(now, locale) } }),
 });
 
 export default definePlugin({
   id: 'usage',
   name: { en: 'AI usage', es: 'Consumo de IA', de: 'KI-Nutzung', 'zh-Hant': 'AI 用量', 'zh-Hans': 'AI 用量' },
-  version: '0.3.0',
+  version: '0.3.1',
   languages: ['en', 'es', 'de', 'zh-Hant', 'zh-Hans'],
   sdk: '^0.2.0',
   permissions: { exec: ['ccusage'], network: [...new Set(Object.values(PROVIDERS).flatMap((p) => p.hosts))] },

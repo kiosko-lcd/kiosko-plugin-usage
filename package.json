@@ -1,6 +1,6 @@
 {
   "name": "kiosko-plugin-usage",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "AI usage on a Kiosko panel: DeepSeek and Kimi balances, OpenAI spend, and coding agents (Claude Code, Codex, Kimi CLI, Qwen Code…) from ccusage.",
   "type": "module",
   "license": "MIT",
