@@ -9,7 +9,7 @@
     "zh-Hant": "AI 用量",
     "zh-Hans": "AI 用量"
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": {
     "en": "What your AI costs: DeepSeek and Kimi balances, OpenAI spend, and the coding agents on this machine (Claude Code, Codex, Kimi CLI, Qwen Code…) from ccusage.",
     "es": "Lo que te cuesta la IA: saldo de DeepSeek y Kimi, gasto de OpenAI y los agentes de programación de esta máquina (Claude Code, Codex, Kimi CLI, Qwen Code…) según ccusage.",

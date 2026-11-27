@@ -3,8 +3,8 @@ import { test } from 'node:test';
 import { createCanvas } from '@napi-rs/canvas';
 import * as kit from '@loksly/lcd-canvas-kit';
 import { THEMES, createBaseContext, defaultsOf, validate } from '@kiosko/sdk';
-import plugin, { accountsSource, agentsSource, agentsWidget, balanceWidget, ccusageSource, summaryWidget } from './index.ts';
-import { accountsDemo, agentsDemo } from './demo.ts';
+import plugin, { accountsSource, agentsSource, agentsWidget, balanceWidget, blocksWidget, ccusageSource, railWidget, summaryWidget } from './index.ts';
+import { accountsDemo, agentsDemo, usageMax } from './demo.ts';
 import type { AccountsData } from './account.ts';
 import { MIN_PX } from './draw-accounts.ts';
 
@@ -99,4 +99,33 @@ test('new sources: no key by default (nothing asked), keys are secrets, hosts de
   assert.ok(accountsSource.minIntervalMs! >= 120_000, 'balances at most every 2 minutes');
   assert.ok(agentsSource.minIntervalMs! >= 60_000);
   assert.deepEqual(defaultsOf(agentsSource.options!), { bin: 'ccusage', offline: false });
+});
+
+test('empty: each widget passes its turn only when its source delivered nothing to show', () => {
+  const empty = (w: { empty?: (c: never) => boolean }, sources: Record<string, unknown>) => w.empty!({ options: {}, data: undefined, sources, now } as never);
+  const usage = (v: unknown) => ({ 'usage/ccusage': v });
+  for (const w of [railWidget, blocksWidget]) {
+    assert.equal(empty(w, {}), false, `${w.id}: loading is not empty`);
+    assert.equal(empty(w, usage(usageMax(now))), false, `${w.id}: real data`);
+    assert.equal(empty(w, usage({})), true, `${w.id}: an empty object`);
+  }
+  assert.equal(empty(railWidget, usage({ mode: 'max', stale: true, windows: [], tokensToday: 0 })), true, 'rail: ccusage gave nothing');
+  assert.equal(empty(railWidget, usage({ mode: 'max', stale: false, windows: [], tokensToday: 0 })), false, 'rail: a healthy zero is shown');
+  assert.equal(empty(blocksWidget, usage({ mode: 'max', blockHistory: [] })), true, 'blocks: no blocks yet');
+
+  const accounts = (v: unknown) => ({ 'usage/accounts': v });
+  for (const w of [balanceWidget, summaryWidget]) {
+    assert.equal(empty(w, {}), false, `${w.id}: loading is not empty`);
+    assert.equal(empty(w, accounts(accountsDemo(now, 'en'))), false, `${w.id}: real data`);
+    assert.equal(empty(w, accounts({ accounts: [] })), true, `${w.id}: no account configured`);
+    assert.equal(empty(w, accounts({})), true, `${w.id}: an empty object`);
+    assert.equal(empty(w, accounts({ accounts: [{ provider: 'deepseek', error: 'down' }] })), true, `${w.id}: failing with no figure`);
+    assert.equal(empty(w, accounts({ accounts: [{ provider: 'deepseek', error: 'down', balance: { amount: 5, currency: 'USD' } }] })), false, `${w.id}: failing, last figure still shown`);
+  }
+
+  const agents = (v: unknown) => ({ 'usage/agents': v });
+  assert.equal(empty(agentsWidget, {}), false, 'agents: loading is not empty');
+  assert.equal(empty(agentsWidget, agents(agentsDemo(now, 'en'))), false, 'agents: real data');
+  assert.equal(empty(agentsWidget, agents({ agents: [] })), true, 'agents: no agent used');
+  assert.equal(empty(agentsWidget, agents({})), true, 'agents: an empty object');
 });
